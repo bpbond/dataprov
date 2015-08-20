@@ -9,11 +9,11 @@ The plan here is to store a provenance as an object attribute. Available functio
 * `updateProvenance(x, message, caller=NULL)` - add a provenance entry (follows the RCMIP5 function)
 * `provenance(x, n = NULL)` - gets the entire data frame, with attribute "dataprov". If `n` is supplied, return a list corresponding to the nth entry
 * `replaceProvenance()` - mass replacement with a data frame
-* summary.dataprov() - summarize data provenance - abbreviating digest and messages
+* `summary.dataprov()` - summarize data provenance - abbreviating all fields (digest, message, etc) for easy reading
 
 **Private**
 * dataprov() - object creation
 
 **???**
-* `mergeProvenance(a, b)` - merge provenance of b into that of a
-* print.dataprov() - no, this would just be printing of data.frame
+* `mergeProvenance(a, b)` - merge provenance of b into that of a. Ugh. Useful?
+* `print.dataprov()` - no, this would just be printing of data.frame
