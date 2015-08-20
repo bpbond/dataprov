@@ -5,7 +5,13 @@ Easy data provenance tracking.
 
 The plan here is to store a provenance as an objection attribute. Available functions will include:
 
+**Public**
 * `updateProvenance(message, caller, etc.)` - add a provenance entry (follows the RCMIP5 function)
 * `getProvenance(n = NULL)` - gets the entire data frame (or the nth entry)
 * `mergeProvenance(a, b)` - merge provenance of b into that of a
 * `replaceProvenance()` - mass replacement with a data frame
+
+**Private**
+* dataprov() - object creation
+* print.dataprov() - ?
+* summary.dataprov() - summarize data provenance
