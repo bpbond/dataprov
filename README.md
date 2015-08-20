@@ -1,5 +1,5 @@
 # dataprov
-Easy data provenance tracking.
+Lightweight data provenance tracking.
 
 *Data provenance* broadly refers to a description of the origins of a piece of data and the process by which it arrived in a database or analysis (see e.g. http://db.cis.upenn.edu/DL/fsttcs.pdf). This package implements a simple system for tracking operations performed on any R object. It's not automatic though--you have to call `updateProvenance()` each time you want to put a new entry into the provenance.
 
@@ -17,3 +17,4 @@ The plan here is to store a provenance as an object attribute. Available functio
 **???**
 * `mergeProvenance(a, b)` - merge provenance of b into that of a. Ugh. Useful?
 * `print.dataprov()` - no, this would just be printing of data.frame
+* Could offer an option to save `x` each time the provenance is updated? Not a version 1.0 feature I don't think
