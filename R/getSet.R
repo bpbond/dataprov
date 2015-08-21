@@ -12,7 +12,7 @@
 #' @export
 #' @examples
 #' # TODO
-getProvenance <- function(x) {
+provenance <- function(x) {
   attr(suppressWarnings(x), "provenance")
 } # getProvenance
 
@@ -26,7 +26,7 @@ getProvenance <- function(x) {
 #' @export
 #' @examples
 #' # TODO
-setProvenance <- function(x, p) {
+replaceProvenance <- function(x, p) {
 
   # TODO - check that p is a valid data frame
 

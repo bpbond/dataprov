@@ -5,9 +5,6 @@
 #' This package implements a simple system for tracking operations performed
 #' on any R object.
 #'
-#' ...
-#'
-#' @references Todd-Brown and Bond-Lamberty, 2014: (in prep).
 #' @import digest assertthat
 #' @docType package
 #' @name dataprov
@@ -17,38 +14,24 @@ NULL
 #'
 #' Constructor.
 #'
-#' @return A dataprov object, which is a data frame with the following fields:
-#'  \item{files}{Array of strings containg the file(s) included in this dataset}
-#'  \item{variable}{String containg the variable name described by this dataset}
-#'  \item{model}{String containing the model name of this dataset}
-#'  \item{experiment}{String containing the experiment name of this dataset}
-#'  \item{ensembles}{Array of strings containg the ensemble(s) included in this dataset}
-#'  \item{domain}{String containing the domain name of this dataset}
-#'  \item{val}{Data frame holding data, with fields lon, lat, Z, time}
-#'  \item{valUnit}{String containing the value units}
-#'  \item{lon}{Numeric vector containing longitude values; may be \code{NULL}}
-#'  \item{lat}{Numeric vector containing latitude values; may be \code{NULL}}
-#'  \item{Z}{Numeric vector Z values; may be \code{NULL}}
-#'  \item{time}{Numeric vector containing time values; may be \code{NULL}}
-#'  \item{dimNames}{Array of strings containing the original (NetCDF) dimension names}
-#'  \item{calendarStr}{String defining the calendar type; may be \code{NULL}}
-#'  \item{debug}{List with additional data (subject to change)}
-#'  \item{provenance}{Data frame with the object's provenance. See \code{\link{addProvenance}}}
-#'  \item{numPerYear}{Numeric vector; only present after \code{\link{makeAnnualStat}}}
-#'  \item{numYears}{Numeric vector; only present after \code{\link{makeMonthlyStat}}}
-#'  \item{numCells}{Numeric vector; only present after \code{\link{makeGlobalStat}}}
-#'  \item{filtered}{Logical; only present after \code{\link{filterDimensions}}}
+#' @return A dataprov object, which is a data frame with the following fields for each entry (row):
+#'  \item{timestamp}{A timestamp of the entry; see \code{\link{DateTimeClasses}}}
+#'  \item{caller}{Name of the function that added this entry}
+#'  \item{message}{Message describing the operation}
+#'  \item{digest}{MD5 hash of the parent object as entry was made}
 #' @docType class
 #' @internal
 dataprov <- function() {
-  data.frame(
-    timestamp=as.Date(character()),
-    caller=character(),
-    message=character(),
-    digest=character(),
-    stringsAsFactors=F
+  d <- data.frame(
+    timestamp = as.POSIXct(character()),
+    caller = character(),
+    message = character(),
+    digest = character(),
+    stringsAsFactors = F
   )
-}
+  class(d) <- c("provenance", class(d))
+  d
+} # dataprov
 
 #' Print a 'dataprov' class object.
 #'
@@ -58,8 +41,11 @@ dataprov <- function() {
 #' @method print dataprov
 #' @export
 #' @keywords internal
-print.dataprov <- function(x, ...) {
-  print(dataprov) # TODO
+print.provenance <- function(x, ...) {
+  x$caller <- paste0(substr(x$caller, 1, 12), "...")
+  x$message <- paste0(substr(x$message, 1, 20), "...")
+  x$digest <- paste0(substr(x$digest, 1, 8), "...")
+  print(as.data.frame(x)) # TODO - only add elpises for over-length strings
 } # print.dataprov
 
 #' Summarize a 'dataprov' class object.

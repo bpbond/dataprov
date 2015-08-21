@@ -17,40 +17,39 @@ addProvenance <- function(x, message, caller=NULL) {
 
   # Sanity checks
   assert_that(is.character(message))
+  assert_that(is.null(caller) | is.character(caller))
 
   prov <- attr(x, "provenance")
   if(is.null(prov)) { # then create a new provenance
     prov <- dataprov()
   }
 
-  # Add to the provenance data structure. Two cases: msg is a string containing
-  # actual message; or it's another cmip5 data object, in which case we want to
-  # append its provenance to that of x.
+  # Calculate necessary information for a new provenance entry
   assert_that(is.data.frame(prov))
   nr <- nrow(prov) + 1
 
-  # Get calling function's call (its name and parameters)
+  # Get calling function's call (its name and parameters) if available
   if(is.null(caller)) {
     caller <- NA
     try({
-      caller <- match.call(definition=sys.function(-1), call=sys.call(-1))
+      caller <- match.call(definition = sys.function(-1), call = sys.call(-1))
       caller <- gsub(" ", "", paste(capture.output(caller), collapse=""))
       caller <- gsub("\\\"", "'", caller)
-    }, silent=TRUE)
+    }, silent = TRUE)
   }
 
   # Trim multiple spaces
   # from http://stackoverflow.com/questions/14737266/removing-multiple-spaces-and-trailing-spaces-using-gsub
-  msg <- gsub("^ *|(?<= ) | *$", "", message, perl=T)
+  msg <- gsub("^ *|(?<= ) | *$", "", message, perl = TRUE)
 
   # Remove artifacts for prettier code in message
   msg <- gsub("{;", "{", msg, fixed = TRUE)
   msg <- gsub("; }", " }", msg, fixed = TRUE)
 
-  dg <- "<digest unavailable>"
+  dg <- NA
   try({
     dg <- digest::digest(x$val)
-  } , silent=TRUE)
+  } , silent = TRUE)
 
   # Add new entry to provenance and return
   prov[nr, "timestamp"] <- Sys.time()
