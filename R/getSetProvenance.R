@@ -14,16 +14,28 @@
 #' d <- updateProvenance(cars, "first message")
 #' d <- updateProvenance(d, "second message")
 #' provenance(d)
-provenance <- function(x, n = NULL) {
-  p <- attr(suppressWarnings(x), "provenance")
+provenance <- function(x, n = NULL, env = parent.frame()) {
 
+  # If the provenance list doesn't exist in parent frame, create it
+  if(!exists(".provenance", env = env)) {
+    assign(".provenance", list(), env = env)
+  }
+
+  # Get the relevant provenance
+  provlist <- get(".provenance", env = env)
+  if(!is.character(x)) {
+    x <- deparse(substitute(x))
+  }
+  prov <- provlist[[x]]
+
+  # Return the whole data frame, or just a row
   if(is.null(n)) {
-    p
+    prov
   } else {
     assert_that(n > 0)
-    as.list(p[n,])
+    as.list(prov[n,])
   }
-} # getProvenance
+} # provenance
 
 #' Replace entire provenance.
 #'
@@ -36,20 +48,41 @@ provenance <- function(x, n = NULL) {
 #' @examples
 #' d1 <- updateProvenance(cars, "first d1 message")
 #' d2 <- updateProvenance(cars, "first d2 message")
-#' d1 <- replaceProvenance(d1, provenance(d2))
-#' provenance(d)
-replaceProvenance <- function(x, p) {
-  # Check that p is a valid data frame
-  reqfields <- c("timestamp", "caller", "message", "digest")
-  if(!all(reqfields %in% names(p))) {
-    stop(paste("'p' must have required fields:", paste(reqfields, collapse=", ")))
+#' provenance(d1) <- provenance(d2)
+#' provenance(d1)
+`provenance<-` <- function(x, value) {
+  replaceProvenance(deparse(substitute(x)), value, env = parent.frame())
+  x
+}
+
+#' Replace entire provenance.
+#'
+#' Replace entire provenance.
+#'
+#' @param x An object.
+#' @param p A data frame that includes the required provenance fields (see \code{\link{provenance}}):
+#' @return x, with provenance set to contents of p
+#' @keywords internal
+replaceProvenance <- function(x, newp, env = parent.frame()) {
+
+  # Check that newp is a valid data frame
+  assert_that(is.data.frame(newp))
+  pnames <- names(dataprov())
+  if(!all(pnames %in% names(newp))) {
+    stop(paste("Must have required fields:", paste(pnames, collapse=", ")))
   }
 
   # Create new provenance data frame and associate with x
-  p$timestamp = as.POSIXct(p$timestamp)
-  p$caller = as.character(p$caller)
-  p$message = as.character(p$message)
-  p$digest = as.character(p$digest)
-  attr(x, "provenance") <- rbind(dataprov(), p)
-  x
+  newp$timestamp = as.POSIXct(newp$timestamp)
+  newp$caller = as.character(newp$caller)
+  newp$message = as.character(newp$message)
+  newp$digest = as.character(newp$digest)
+
+  if(!is.character(x)) {
+    x <- deparse(substitute(x, env = env))
+  }
+
+  provlist <- get(".provenance", env = env)
+  provlist[[x]] <- newp
+  assign(".provenance", provlist, env = env)
 } # replaceProvenance

@@ -4,7 +4,7 @@
 \alias{provenance}
 \title{Get provenance.}
 \usage{
-provenance(x, n = NULL)
+provenance(x, n = NULL, env = parent.frame())
 }
 \arguments{
 \item{x}{An object}
@@ -19,7 +19,7 @@ A provenance object, as a data frame, with one row for each operation and four c
  \item{digest}{Hash of the data when this entry was added; see \code{\link{digest}}}
 }
 \description{
-Get provenance.
+Get provenance information of an object.
 }
 \examples{
 d <- updateProvenance(cars, "first message")

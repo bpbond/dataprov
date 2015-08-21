@@ -21,11 +21,10 @@
 updateProvenance <- function(x, message, caller=NULL) {
 
   # Sanity checks
-  assert_that(is.object(x))
   assert_that(is.character(message))
   assert_that(is.null(caller) | is.character(caller))
 
-  prov <- attr(x, "provenance")
+  prov <- provenance(deparse(substitute(x)), env = parent.frame())
   if(is.null(prov)) { # then create a new provenance
     prov <- dataprov()
   }
@@ -63,6 +62,6 @@ updateProvenance <- function(x, message, caller=NULL) {
   prov[nr, "caller"] <- caller
   prov[nr, "message"] <- msg
 
-  attr(x, "provenance") <- prov
-  x
+#  provenance(x) <- prov
+  replaceProvenance(deparse(substitute(x)), prov, env = parent.frame())
 } # updateProvenance

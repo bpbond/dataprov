@@ -11,7 +11,7 @@ updateProvenance(x, message, caller = NULL)
 
 \item{message}{A string (message to be added to the provenance)}
 
-\item{caller}{The calling function (automatically filled in if NULL)}
+\item{caller}{The calling function name (automatically filled in if NULL)}
 }
 \value{
 The original object, with an updated provenance containing:
@@ -19,7 +19,8 @@ The original object, with an updated provenance containing:
  \item{caller}{The function that added this entry, including its parameter values}
  \item{message}{Description of action(s) taken}
  \item{digest}{Hash of the data when this entry was added; see \code{\link{digest}}}
-This function logs information from the caller to a 'provenance' data structure.
+This function logs information from the caller to a 'provenance' data structure that is
+attached as an attribute of \code{x}.
 }
 \description{
 It's important to track data provenance, the steps taken to produce a particular
