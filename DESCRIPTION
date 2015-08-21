@@ -6,5 +6,8 @@ Date: 2015-08-19
 Author: Ben Bond-Lamberty
 Maintainer: Ben Bond-Lamberty <bondlamberty@pnnl.gov>
 Description: More about what it does (maybe more than one line)
+Imports:
+    assertthat (>= 0.1),
+    digest
 License: MIT
 LazyData: TRUE

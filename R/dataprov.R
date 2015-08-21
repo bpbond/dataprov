@@ -8,7 +8,7 @@
 #' ...
 #'
 #' @references Todd-Brown and Bond-Lamberty, 2014: (in prep).
-#' @import digest
+#' @import digest assertthat
 #' @docType package
 #' @name dataprov
 NULL
@@ -39,9 +39,15 @@ NULL
 #'  \item{numCells}{Numeric vector; only present after \code{\link{makeGlobalStat}}}
 #'  \item{filtered}{Logical; only present after \code{\link{filterDimensions}}}
 #' @docType class
-#' @export
+#' @internal
 dataprov <- function() {
-
+  data.frame(
+    timestamp=as.Date(character()),
+    caller=character(),
+    message=character(),
+    digest=character(),
+    stringsAsFactors=F
+  )
 }
 
 #' Print a 'dataprov' class object.
@@ -53,8 +59,8 @@ dataprov <- function() {
 #' @export
 #' @keywords internal
 print.dataprov <- function(x, ...) {
-
-} # print.cmip5data
+  print(dataprov) # TODO
+} # print.dataprov
 
 #' Summarize a 'dataprov' class object.
 #'
@@ -66,47 +72,5 @@ print.dataprov <- function(x, ...) {
 #' @export
 #' @keywords internal
 summary.dataprov <- function(object, ...) {
-
-} # summary.cmip5data
-
-#' Print the summary for a 'cmip5data' class object.
-#'
-#' @param x A \code{\link{cmip5data}} object
-#' @param ... Other parameters passed to cat
-#' @details Prints a one-line summary of the object
-#' @method print summary.cmip5data
-#' @export
-#' @keywords internal
-print.summary.cmip5data <- function(x, ...) {
-  cat(x$type, "\n")
-  cat("Variable: ", x$variable, " (", x$valUnit, ") from model ", x$model, "\n", sep="")
-  cat(sprintf("Data range: %.2g to %.2g Mean: %.2g\n", x$valsummary[1], x$valsummary[3],  x$valsummary[2]))
-  cat("Experiment:", x$experiment, "-", length(x$ensembles), "ensemble(s)\n")
-  cat("Spatial dimensions:", x$spatial, "\n")
-  cat("Time dimension:", x$time, "\n")
-  cat("Size:", format(round(x$size/1024/1024, 1), nsmall=1), "MB\n")
-  cat("Provenance has", nrow(x$provenance), "entries\n")
-} # print.summary.cmip5data
-
-#' Convert a cmip5data object to a data frame
-#'
-#' @param x A \code{\link{cmip5data}} object
-#' @param ... Other parameters
-#' @param originalNames logical. Use original dimension names from file?
-#' @return The object converted to a data frame
-#' @method as.data.frame cmip5data
-#' @export
-#' @keywords internal
-as.data.frame.cmip5data <- function(x, ..., originalNames=FALSE) {
-
-  # Sanity checks
-  assert_that(is.flag(originalNames))
-
-  if(is.array(x$val)) {
-    convert_array_to_df(x)
-  } else {
-    # Suppress stupid NOTEs from R CMD CHECK
-    lon <- lat <- Z <- time <- NULL
-    dplyr::arrange(x$val, lon, lat, Z, time)
-  }
-} # as.data.frame.cmip5data
+  summary(object)  # TODO
+} # summary.dataprov
