@@ -15,13 +15,13 @@ The provenance is stored as an object attribute (currently a data frame, but don
 **Public**
 * `updateProvenance(x, message, caller = NULL)` - add a provenance entry
 * `provenance(x, n = NULL)` - gets the entire data frame, with attribute "dataprov". If `n` is supplied, return a list corresponding to the *nth* entry
-* `replaceProvenance(x, p)` - replace entire provenance of `x` with a data frame `p` (must have correct fields)
-* `summary.dataprov()` - summarize data provenance - abbreviating all fields (digest, message, etc) for easy reading
+* `provenance(x) <- p` - replaces entire provenance of `x` with `p` (must be data.frame with correct fields)
+* `print.dataprov()` - summarize data provenance - abbreviating all fields (digest, message, etc) for easy reading
 
 **Private**
 * dataprov() - object creation
+* `replaceProvenance(x, p)` - replace entire provenance of `x` with `p` 
 
 **???**
 * `mergeProvenance(a, b)` - merge provenance of b into that of a. Ugh. Useful?
-* `print.dataprov()` - no, this would just be printing of data.frame
 * Could offer an option to save `x` each time the provenance is updated? Not a version 1.0 feature I don't think
