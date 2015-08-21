@@ -18,20 +18,16 @@
 #' d <- updateProvenance(d, "second message")
 #' provenance(d)
 #' @export
-updateProvenance <- function(x, message, caller=NULL) {
+updateProvenance <- function(x, message, caller=NULL, env = .GlobalEnv) {
 
   # Sanity checks
-  assert_that(is.object(x))
   assert_that(is.character(message))
   assert_that(is.null(caller) | is.character(caller))
 
-  prov <- attr(x, "provenance")
-  if(is.null(prov)) { # then create a new provenance
-    prov <- dataprov()
-  }
+  prov <- provenance(x, env = env)
+  assert_that(is.data.frame(prov))
 
   # Calculate necessary information for a new provenance entry
-  assert_that(is.data.frame(prov))
   nr <- nrow(prov) + 1
 
   # Get calling function's call (its name and parameters) if available
@@ -63,6 +59,5 @@ updateProvenance <- function(x, message, caller=NULL) {
   prov[nr, "caller"] <- caller
   prov[nr, "message"] <- msg
 
-  attr(x, "provenance") <- prov
-  x
+  replaceProvenance(x, prov, env = env)
 } # updateProvenance
