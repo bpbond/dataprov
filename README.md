@@ -3,7 +3,7 @@
 
 Currently this works as follows:
 * Each object to be tracked has an attribute "provenance" attached to it **once** via `createProvenance`. This attribute essentially holds the provenance lookup name, and is a combination of the object's name and date/time.
-* The lookup name is used to pull out an element from a `.provenance_list` list, currently stored by default in the global environment. For example if object `x` has a "provenance" attribute of "x_12345", then `.provenance_list[["x_12345"]] holds the provenance record.
+* The lookup name is used to pull out an element from a `.provenance_list` list, currently stored by default in the global environment. For example if object `x` gets assigned a "provenance" attribute of "x_12345", then `.provenance_list[["x_12345"]]` holds the provenance record.
 * This record is a data frame with timestamp, caller, message, and digest (MD5). `updateProvenance` only changes this, not the original object `x`, so avoiding (I hope) expensive copies.
 
 ```R
