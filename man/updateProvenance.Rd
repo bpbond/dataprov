@@ -4,7 +4,7 @@
 \alias{updateProvenance}
 \title{Add provenance information to an object}
 \usage{
-updateProvenance(x, message, caller = NULL)
+updateProvenance(x, message, caller = NULL, env = .GlobalEnv)
 }
 \arguments{
 \item{x}{An R object}
