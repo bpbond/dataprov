@@ -1,9 +1,9 @@
 # dataprov
-Lightweight data provenance tracking.
+*Lightweight* data provenance tracking.
 
 *Data provenance* broadly refers to a description of the origins of a piece of data and the process by which it arrived in a database or analysis (see e.g. http://db.cis.upenn.edu/DL/fsttcs.pdf). This package implements a simple system for tracking operations performed on any R object. It's not automatic though--you have to call `updateProvenance()` each time you want to put a new entry into the provenance.
 
-The plan here is to store a provenance as an object attribute. Available functions will include:
+The provenance is stored as an object attribute (currently a data frame, but don't depend on this--use the accessor functions below!). Available functions include:
 
 **Public**
 * `updateProvenance(x, message, caller=NULL)` - add a provenance entry (follows the RCMIP5 function)
