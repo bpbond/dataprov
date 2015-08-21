@@ -5,17 +5,23 @@
 #'
 #' @param x An R object
 #' @param message A string (message to be added to the provenance)
-#' @param caller The calling function (automatically filled in if NULL)
+#' @param caller The calling function name (automatically filled in if NULL)
 #' @return The original object, with an updated provenance containing:
 #'  \item{timestamp}{Date and time entry was added}
 #'  \item{caller}{The function that added this entry, including its parameter values}
 #'  \item{message}{Description of action(s) taken}
 #'  \item{digest}{Hash of the data when this entry was added; see \code{\link{digest}}}
-#' This function logs information from the caller to a 'provenance' data structure.
+#' This function logs information from the caller to a 'provenance' data structure that is
+#' attached as an attribute of \code{x}.
+#' @examples
+#' d <- updateProvenance(cars, "first message")
+#' d <- updateProvenance(d, "second message")
+#' provenance(d)
 #' @export
-addProvenance <- function(x, message, caller=NULL) {
+updateProvenance <- function(x, message, caller=NULL) {
 
   # Sanity checks
+  assert_that(is.object(x))
   assert_that(is.character(message))
   assert_that(is.null(caller) | is.character(caller))
 
@@ -48,7 +54,7 @@ addProvenance <- function(x, message, caller=NULL) {
 
   dg <- NA
   try({
-    dg <- digest::digest(x$val)
+    dg <- digest::digest(x)
   } , silent = TRUE)
 
   # Add new entry to provenance and return
@@ -59,4 +65,4 @@ addProvenance <- function(x, message, caller=NULL) {
 
   attr(x, "provenance") <- prov
   x
-} # addProvenance
+} # updateProvenance

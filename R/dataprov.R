@@ -20,7 +20,7 @@ NULL
 #'  \item{message}{Message describing the operation}
 #'  \item{digest}{MD5 hash of the parent object as entry was made}
 #' @docType class
-#' @internal
+#' @keywords internal
 dataprov <- function() {
   d <- data.frame(
     timestamp = as.POSIXct(character()),
@@ -38,25 +38,20 @@ dataprov <- function() {
 #' @param x A \code{\link{dataprov}} object
 #' @param ... Other parameters passed to cat
 #' @details Prints a one-line summary of the object
-#' @method print dataprov
+#' @method print provenance
 #' @export
 #' @keywords internal
 print.provenance <- function(x, ...) {
-  x$caller <- paste0(substr(x$caller, 1, 12), "...")
-  x$message <- paste0(substr(x$message, 1, 20), "...")
-  x$digest <- paste0(substr(x$digest, 1, 8), "...")
-  print(as.data.frame(x)) # TODO - only add elpises for over-length strings
-} # print.dataprov
 
-#' Summarize a 'dataprov' class object.
-#'
-#' @param object A \code{\link{dataprov}} object
-#' @param ... ignored
-#' @details Prints a short summary of the object.
-#' @return A summary structure of the object.
-#' @method summary dataprov
-#' @export
-#' @keywords internal
-summary.dataprov <- function(object, ...) {
-  summary(object)  # TODO
-} # summary.dataprov
+  # Pretty print - shorten fields that are likely to be long
+  shorten <- function(x, maxc, term = "...") {
+    if(nchar(x) > maxc) paste0(substr(x, 1, maxc - nchar(term)), term)
+    else x
+  }
+
+  x$caller <- unlist(lapply(x$caller, shorten, maxc = 20))
+  x$message <- unlist(lapply(x$message, shorten, maxc = 30))
+  x$digest <- unlist(lapply(x$digest, shorten, maxc = 8, term=""))
+
+  print(as.data.frame(x))
+} # print.dataprov
