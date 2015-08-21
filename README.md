@@ -2,8 +2,8 @@
 **Lightweight** data provenance tracking.
 
 Currently this works as follows:
-* Each object to be tracked has an attribute `provenance` attached to it **once** via `createProvenance`. This attribute essentially holds the provenance lookup name, and is a combination of the object's name and date/time.
-* The lookup name is used to pull out an element from a `.provenance_list` list, currently stored by default in the global environment. For example if object `x` has a `provenance` attribute of "x_12345", then `.provenance_list[["x_12345"]] holds the provenance record.
+* Each object to be tracked has an attribute "provenance" attached to it **once** via `createProvenance`. This attribute essentially holds the provenance lookup name, and is a combination of the object's name and date/time.
+* The lookup name is used to pull out an element from a `.provenance_list` list, currently stored by default in the global environment. For example if object `x` has a "provenance" attribute of "x_12345", then `.provenance_list[["x_12345"]] holds the provenance record.
 * This record is a data frame with timestamp, caller, message, and digest (MD5). `updateProvenance` only changes this, not the original object `x`, so avoiding (I hope) expensive copies.
 
 
@@ -12,10 +12,11 @@ Currently this works as follows:
 The provenance is stored as an object attribute (currently a data frame, but don't depend on this--use the accessor functions below!). Available functions include:
 
 **Public**
-* `updateProvenance(x, message, caller = NULL)` - add a provenance entry
-* `provenance(x, n = NULL)` - gets the entire data frame, with attribute "dataprov". If `n` is supplied, return a list corresponding to the *nth* entry
-* `provenance(x) <- p` - replaces entire provenance of `x` with `p` (must be data.frame with correct fields)
-* `print.dataprov()` - summarize data provenance - abbreviating all fields (digest, message, etc) for easy reading
+* `createProvenance(x, env = .GlobalEnv)` - attach a "provenance" attribute to `x`, create the provenance_list if necessary, and create an empty provenance record. Necessary before any of the functions below can be called.
+* `updateProvenance(x, message, caller = NULL, env = .GlobalEnv)` - add a provenance entry
+* `provenance(x, n = NULL, env = .GlobalEnv)` - gets the entire data frame, with attribute "dataprov". If `n` is supplied, return a list corresponding to the *nth* entry
+* `print.dataprov()` - summarize a data provenance - abbreviating all fields (digest, message, etc) for easy reading
+* `listProvenances(env = .GlobalEnv)` - summary list of current provenances records
 
 **Private**
 * dataprov() - object creation
@@ -24,3 +25,4 @@ The provenance is stored as an object attribute (currently a data frame, but don
 **???**
 * `mergeProvenance(a, b)` - merge provenance of b into that of a. Ugh. Useful?
 * Could offer an option to save `x` each time the provenance is updated? Not a version 1.0 feature I don't think
+* `provenance(x) <- p` - replaces entire provenance of `x` with `p` (must be data.frame with correct fields)
