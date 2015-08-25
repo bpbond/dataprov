@@ -1,5 +1,5 @@
 # dataprov
-**Lightweight** data provenance tracking.
+**Lightweight** data provenance tracking. More comprehensive/involved approaches include [recordr](https://github.com/NCEAS/recordr), [rProvenance](https://github.com/karthik/rProvenance), and [RDataTracker](https://github.com/blernermhc/RDataTracker).
 
 Currently this works as follows:
 * Each object to be tracked has an attribute "provenance" attached to it **once** via `createProvenance`. This attribute essentially holds the provenance lookup name, and is a combination of the object's name and date/time.
